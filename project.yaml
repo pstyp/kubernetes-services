@@ -13,17 +13,17 @@ spec:
    metadata: 
     labels: 
      app: service1
-    spec:
-     containers:
-     - name: service1
-       image: pstyp94/service1
-       ports:
-       - containerPort: 5000
-       env: 
-       - name: PASSWORD
-         value: root
-         name: DATABASE
-         value: mysql+pymysql://root:root@mysql:3306/flask-db
+   spec:
+    containers:
+    - name: service1
+      image: pstyp94/service1
+      ports:
+      - containerPort: 5000
+      env: 
+      - name: PASSWORD
+        value: root
+        name: DATABASE
+        value: mysql+pymysql://root:root@mysql:3306/flask-db
    
 ---      
 apiVersion: apps/v1 
@@ -33,10 +33,10 @@ metadata:
   labels:
    app: service2
 spec:
- replicas: 1      
- selector:
-  matchLabels: 
-   app: service2 
+  replicas: 1      
+  selector:
+   matchLabels: 
+    app: service2 
   template:
    metadata:
     labels:
@@ -75,7 +75,7 @@ spec:
 
   
 ---
-apiVerison: apps/v1 
+apiVersion: apps/v1 
 kind: Deployment
 metadata:
   name: service4
@@ -88,38 +88,48 @@ spec:
     app: service4
   template:
    metadata:
-    labels: service4
+    labels:
+     app: service4
    spec: 
     containers:
     - name: service4
       image: pstyp94/service4
       ports:
-     - containerPort: 5003
-     env:
-     - name: PASSWORD
-       value: root
-     - name: DATABASE
-       value: mysql+pymysql://root:root@mysql:3306/flask-db
+      - containerPort: 5003
+      env:
+      - name: PASSWORD
+        value: root
+      - name: DATABASE
+        value: mysql+pymysql://root:root@mysql:3306/flask-db
 
 ---
 
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: mysql 
   labels:
    app: mysql
 spec:
-  containers:
-  - name: mysql
-    image: mysql:5.7
-    ports:
-    - containerPort: 3306
-    env:
-    - name: MYSQL_ROOT_PASSWORD
-      value: root
-    - name: MYSQL_DATABASE
-      value: flask-db
+  replicas: 1
+  selector:
+   matchLabels:
+    app: mysql
+  template:
+   metadata:
+    labels:
+     app: mysql
+   spec:
+    containers:
+    - name: mysql
+      image: mysql:5.7
+      ports:
+      - containerPort: 3306
+      env:
+      - name: MYSQL_ROOT_PASSWORD
+        value: root
+      - name: MYSQL_DATABASE
+        value: flask-db
 
 
 
